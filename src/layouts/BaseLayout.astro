@@ -36,11 +36,52 @@ const { title, description = 'Planes de servicios de desarrollo freelance para t
         root.style.colorScheme = isDark ? 'dark' : 'light';
       })();
     </script>
+    <script is:inline>
+      (function () {
+        var storageKey = 'dev-service-plans-theme';
+        var root = document.documentElement;
+
+        function isDark() {
+          return root.getAttribute('data-theme') === 'dark' || root.classList.contains('dark');
+        }
+
+        function updateIcons() {
+          var sunEl = document.getElementById('theme-icon-sun');
+          var moonEl = document.getElementById('theme-icon-moon');
+          var dark = isDark();
+          if (sunEl) sunEl.style.display = dark ? 'none' : 'inline';
+          if (moonEl) moonEl.style.display = dark ? 'inline' : 'none';
+        }
+
+        function setTheme(theme) {
+          root.classList.toggle('dark', theme === 'dark');
+          root.setAttribute('data-theme', theme);
+          root.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
+          localStorage.setItem(storageKey, theme);
+          updateIcons();
+        }
+
+        document.addEventListener('click', function (e) {
+          if (!e.target || !e.target.closest || !e.target.closest('#theme-toggle')) return;
+          setTheme(isDark() ? 'light' : 'dark');
+        });
+
+        function initIcons() {
+          updateIcons();
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initIcons);
+        } else {
+          initIcons();
+        }
+        document.addEventListener('astro:page-load', initIcons);
+      })();
+    </script>
   </head>
   <body class="font-sans">
     <header class="border-b border-neutral-200 dark:border-neutral-800 bg-neutral-100/80 dark:bg-neutral-900/80 backdrop-blur-md sticky top-0 z-20 pt-[env(safe-area-inset-top)]">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex justify-between items-center gap-4">
-        <a href="/" class="flex items-center gap-2 text-base sm:text-lg font-semibold text-neutral-900 dark:text-neutral-50 hover:text-neutral-700 dark:hover:text-neutral-400 transition-colors truncate min-w-0">
+        <a href="/" class="nav-link flex items-center gap-2 text-base sm:text-lg font-semibold text-neutral-900 dark:text-neutral-50 transition-colors truncate min-w-0 py-2 px-2 -mx-2 rounded-lg touch-manipulation">
           <span class="text-neutral-700 dark:text-neutral-400 shrink-0 [&_svg]:stroke-current"><LayoutDashboard size={22} strokeWidth={1.75} /></span>
           <span>Dev Service Plans</span>
         </a>
@@ -50,7 +91,7 @@ const { title, description = 'Planes de servicios de desarrollo freelance para t
             href="https://lgomez.dev"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center gap-1.5 py-2 px-3 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-400 hover:bg-neutral-200/50 dark:hover:bg-neutral-700/50 transition-colors touch-manipulation"
+            class="nav-link flex items-center gap-1.5 py-2 px-3 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-colors touch-manipulation"
           >
             <span class="hidden sm:inline">lgomez.dev</span>
             <ExternalLink size={16} strokeWidth={1.75} />

@@ -15,10 +15,10 @@ const { title, price, duration, description, features, recommended = false } = A
 
 <div
   class:list={[
-    'relative rounded-2xl border-2 p-5 sm:p-6 lg:p-8 flex flex-col h-full transition-all duration-200 overflow-hidden',
+    'pricing-card relative rounded-2xl border-2 p-5 sm:p-6 lg:p-8 flex flex-col h-full transition-all duration-300 overflow-hidden',
     recommended
-      ? 'border-emerald-300 dark:border-emerald-700 bg-emerald-50/80 dark:bg-emerald-950/40 shadow-md sm:scale-[1.02] lg:scale-[1.03] z-10'
-      : 'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 hover:border-neutral-700/40 dark:hover:border-neutral-400/40 hover:shadow-md',
+      ? 'pricing-card--recommended border-emerald-300 dark:border-emerald-700 bg-emerald-50/80 dark:bg-emerald-950/40 shadow-md sm:scale-[1.02] lg:scale-[1.03] z-10'
+      : 'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800',
   ]}
 >
   {recommended && (

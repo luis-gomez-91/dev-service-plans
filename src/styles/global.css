@@ -74,6 +74,25 @@
   border-color: #047857;
 }
 
+/* Hover sutil en cards de planes: solo fondo */
+.pricing-card:hover {
+  background-color: #fafafa;
+}
+
+.pricing-card:hover.pricing-card--recommended {
+  background-color: rgba(209, 250, 229, 0.9);
+}
+
+[data-theme="dark"] .pricing-card:hover,
+.dark .pricing-card:hover {
+  background-color: #2d2d2d;
+}
+
+[data-theme="dark"] .pricing-card:hover.pricing-card--recommended,
+.dark .pricing-card:hover.pricing-card--recommended {
+  background-color: rgba(6, 78, 59, 0.5);
+}
+
 /* Secciones tipo card y tabla */
 [data-theme="dark"] section.rounded-2xl {
   background-color: #262626;
@@ -102,4 +121,55 @@
 
 [data-theme="dark"] tbody tr {
   border-color: #404040;
+}
+
+/* Hover de cards del index: elevación y borde */
+.card-link:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12), 0 4px 12px -4px rgba(0, 0, 0, 0.06);
+  border-color: rgb(64 64 64 / 0.6);
+}
+
+.dark .card-link:hover,
+[data-theme="dark"] .card-link:hover {
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.4), 0 4px 12px -4px rgba(0, 0, 0, 0.25);
+  border-color: rgb(163 163 163 / 0.4);
+  background-color: #2a2a2a;
+}
+
+/* Nav: hover legible en light y dark */
+.nav-link:hover {
+  background-color: rgb(229 229 229 / 0.6);
+  color: #171717;
+}
+
+[data-theme="dark"] .nav-link:hover,
+.dark .nav-link:hover {
+  background-color: #404040;
+  color: #fafafa;
+}
+
+[data-theme="dark"] .nav-link:hover span,
+.dark .nav-link:hover span,
+[data-theme="dark"] .nav-link:hover [class*="stroke-current"],
+.dark .nav-link:hover [class*="stroke-current"] {
+  color: #fafafa !important;
+}
+
+/* Botón tema: hover legible en light y dark */
+.theme-toggle-btn:hover {
+  background-color: rgb(229 229 229 / 0.6);
+  color: #171717;
+}
+
+[data-theme="dark"] .theme-toggle-btn:hover,
+.dark .theme-toggle-btn:hover {
+  background-color: #404040;
+  color: #fafafa !important;
+}
+
+[data-theme="dark"] .theme-toggle-btn:hover svg,
+.dark .theme-toggle-btn:hover svg {
+  color: #fafafa;
+  stroke: #fafafa;
 }
