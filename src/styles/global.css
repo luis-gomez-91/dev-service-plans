@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply min-h-screen min-h-[100dvh] flex flex-col bg-neutral-50 text-neutral-900;
+  }
+
+  [data-theme="dark"] body {
+    background-color: #0a0a0a;
+    color: #fafafa;
+  }
+
+  [data-theme="dark"] header {
+    background-color: rgba(23, 23, 23, 0.8);
+    border-color: #262626;
+  }
+
+  [data-theme="dark"] footer {
+    background-color: rgba(23, 23, 23, 0.6);
+    border-color: #262626;
+  }
+
+  .dark .shadow-sm,
+  [data-theme="dark"] .shadow-sm {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* Dark mode: forzar colores de texto y cards cuando data-theme="dark" */
+[data-theme="dark"] main {
+  color: #fafafa;
+}
+
+[data-theme="dark"] .text-neutral-900 {
+  color: #fafafa !important;
+}
+
+[data-theme="dark"] .text-neutral-600,
+[data-theme="dark"] .text-neutral-700 {
+  color: #a3a3a3 !important;
+}
+
+[data-theme="dark"] .text-neutral-400 {
+  color: #a3a3a3 !important;
+}
+
+/* Cards de industria (index) */
+[data-theme="dark"] main a.rounded-2xl {
+  background-color: #262626;
+  border-color: #404040;
+  color: #fafafa;
+}
+
+[data-theme="dark"] main a.rounded-2xl .rounded-xl {
+  background-color: #171717;
+  border-color: #404040;
+}
+
+/* Cards de precios (PricingCard) */
+[data-theme="dark"] .rounded-2xl.border-2 {
+  background-color: #262626;
+  border-color: #404040;
+  color: #fafafa;
+}
+
+[data-theme="dark"] .rounded-2xl.border-2[class*="emerald"] {
+  background-color: rgba(6, 78, 59, 0.4);
+  border-color: #047857;
+}
+
+/* Secciones tipo card y tabla */
+[data-theme="dark"] section.rounded-2xl {
+  background-color: #262626;
+  border-color: #404040;
+  color: #fafafa;
+}
+
+[data-theme="dark"] div.rounded-xl.border {
+  background-color: #262626;
+  border-color: #404040;
+}
+
+[data-theme="dark"] table {
+  color: #fafafa;
+}
+
+[data-theme="dark"] thead tr {
+  background-color: #171717;
+}
+
+[data-theme="dark"] th,
+[data-theme="dark"] td {
+  border-color: #404040;
+  color: #fafafa;
+}
+
+[data-theme="dark"] tbody tr {
+  border-color: #404040;
+}

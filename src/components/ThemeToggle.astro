@@ -1,0 +1,60 @@
+---
+import { Sun, Moon } from '@lucide/astro';
+---
+
+<button
+  type="button"
+  id="theme-toggle"
+  aria-label="Cambiar tema (claro/oscuro)"
+  class="p-2 rounded-lg text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 hover:bg-neutral-200/50 dark:hover:bg-neutral-700/50 transition-colors touch-manipulation"
+>
+  <span id="theme-icon-sun" aria-hidden="true" style="display: none;">
+    <Sun size={20} strokeWidth={1.75} />
+  </span>
+  <span id="theme-icon-moon" aria-hidden="true" style="display: none;">
+    <Moon size={20} strokeWidth={1.75} />
+  </span>
+</button>
+
+<script>
+  (function () {
+    const storageKey = 'dev-service-plans-theme';
+    const root = document.documentElement;
+    const sunEl = document.getElementById('theme-icon-sun');
+    const moonEl = document.getElementById('theme-icon-moon');
+
+    function isDark() {
+      return root.getAttribute('data-theme') === 'dark' || root.classList.contains('dark');
+    }
+
+    function updateIcons() {
+      const dark = isDark();
+      if (sunEl) sunEl.style.display = dark ? 'none' : 'inline';
+      if (moonEl) moonEl.style.display = dark ? 'inline' : 'none';
+    }
+
+    function setTheme(theme) {
+      root.classList.toggle('dark', theme === 'dark');
+      root.setAttribute('data-theme', theme);
+      root.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
+      localStorage.setItem(storageKey, theme);
+      updateIcons();
+    }
+
+    function init() {
+      updateIcons();
+      const toggle = document.getElementById('theme-toggle');
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          setTheme(isDark() ? 'light' : 'dark');
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>

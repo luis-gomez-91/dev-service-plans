@@ -1,0 +1,31 @@
+---
+import PricingCard from './PricingCard.astro';
+
+export interface Plan {
+  title: string;
+  price: number;
+  duration: string;
+  description: string;
+  features: string[];
+  recommended?: boolean;
+}
+
+interface Props {
+  plans: Plan[];
+}
+
+const { plans } = Astro.props;
+---
+
+<div class="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto items-stretch">
+  {plans.map((plan) => (
+    <PricingCard
+      title={plan.title}
+      price={plan.price}
+      duration={plan.duration}
+      description={plan.description}
+      features={plan.features}
+      recommended={plan.recommended}
+    />
+  ))}
+</div>

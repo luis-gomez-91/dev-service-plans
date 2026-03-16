@@ -1,0 +1,75 @@
+---
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import { ViewTransitions } from 'astro:transitions';
+import { LayoutDashboard, ExternalLink } from '@lucide/astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Planes de servicios de desarrollo freelance para tu negocio.' } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <ViewTransitions />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+    <title>{title} | Dev Service Plans</title>
+    <script is:inline>
+      (function () {
+        var k = 'dev-service-plans-theme';
+        var s = localStorage.getItem(k);
+        var d = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var isDark = s === 'dark' || (s !== 'light' && d);
+        var root = document.documentElement;
+        root.classList.toggle('dark', isDark);
+        root.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        root.style.colorScheme = isDark ? 'dark' : 'light';
+      })();
+    </script>
+  </head>
+  <body class="font-sans">
+    <header class="border-b border-neutral-200 dark:border-neutral-800 bg-neutral-100/80 dark:bg-neutral-900/80 backdrop-blur-md sticky top-0 z-20 pt-[env(safe-area-inset-top)]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex justify-between items-center gap-4">
+        <a href="/" class="flex items-center gap-2 text-base sm:text-lg font-semibold text-neutral-900 dark:text-neutral-50 hover:text-neutral-700 dark:hover:text-neutral-400 transition-colors truncate min-w-0">
+          <span class="text-neutral-700 dark:text-neutral-400 shrink-0 [&_svg]:stroke-current"><LayoutDashboard size={22} strokeWidth={1.75} /></span>
+          <span>Dev Service Plans</span>
+        </a>
+        <nav class="flex items-center gap-1 sm:gap-2 shrink-0">
+          <ThemeToggle />
+          <a
+            href="https://lgomez.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-1.5 py-2 px-3 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-400 hover:bg-neutral-200/50 dark:hover:bg-neutral-700/50 transition-colors touch-manipulation"
+          >
+            <span class="hidden sm:inline">lgomez.dev</span>
+            <ExternalLink size={16} strokeWidth={1.75} />
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-14 pb-[calc(2rem+env(safe-area-inset-bottom))] sm:pb-12">
+      <slot />
+    </main>
+
+    <footer class="border-t border-neutral-200 dark:border-neutral-800 bg-neutral-100/60 dark:bg-neutral-900/60 mt-auto pb-[env(safe-area-inset-bottom)]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6 text-center">
+        <p class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 max-w-xl mx-auto">
+          © {new Date().getFullYear()} Dev Service Plans. Planes de desarrollo freelance por industria.
+          <a href="https://lgomez.dev" target="_blank" rel="noopener noreferrer" class="text-neutral-700 dark:text-neutral-400 hover:underline ml-1">lgomez.dev</a>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,224 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PricingGrid from '../components/PricingGrid.astro';
+import { ArrowLeft, Table2, Headphones, Info, Check } from '@lucide/astro';
+
+interface PlanData {
+  title: string;
+  price: number;
+  duration: string;
+  description: string;
+  features: string[];
+  recommended?: boolean;
+}
+
+export function getStaticPaths() {
+  const EMPRESA_NAMES: Record<string, string> = {
+    asomi: 'ASOMI',
+    'sabor-vinceno': 'Sabor vinceño',
+    'dos-tragos': 'Dos Tragos',
+  };
+  const planModules = import.meta.glob<{ frontmatter: PlanData }>('../content/companies/*/plans/*.md', {
+    eager: true,
+  });
+  const supportPlanModules = import.meta.glob<{ frontmatter: PlanData }>('../content/companies/*/support-plans/*.md', {
+    eager: true,
+  });
+  const descriptionModules = import.meta.glob<{ frontmatter: { name: string; logo: string } }>(
+    '../content/companies/*/description.md',
+    { eager: true }
+  );
+  function getLogo(slug: string): string {
+    for (const [path, mod] of Object.entries(descriptionModules)) {
+      const normalized = path.replace(/\\/g, '/');
+      if (normalized.includes(`/companies/${slug}/description.md`) && mod?.frontmatter?.logo) {
+        return mod.frontmatter.logo;
+      }
+    }
+    return '';
+  }
+  const paths = Object.keys(planModules);
+  const empresas = new Set<string>();
+  for (const p of paths) {
+    const parts = p.replace(/\\/g, '/').split('/');
+    const idx = parts.indexOf('companies');
+    if (idx >= 0 && parts[idx + 1]) empresas.add(parts[idx + 1]);
+  }
+  return [...empresas].map((empresa) => {
+    const prefix = `../content/companies/${empresa}/plans/`;
+    const supportPrefix = `../content/companies/${empresa}/support-plans/`;
+    const plans: PlanData[] = [];
+    for (const [path, mod] of Object.entries(planModules)) {
+      const normalizedPath = path.replace(/\\/g, '/');
+      if (!normalizedPath.startsWith(prefix) || !mod?.frontmatter) continue;
+      const f = mod.frontmatter;
+      plans.push({
+        title: f.title,
+        price: Number(f.price),
+        duration: String(f.duration ?? ''),
+        description: String(f.description ?? ''),
+        features: Array.isArray(f.features) ? f.features : [],
+        recommended: Boolean(f.recommended),
+      });
+    }
+    plans.sort((a, b) => a.price - b.price);
+
+    const supportPlans: PlanData[] = [];
+    for (const [path, mod] of Object.entries(supportPlanModules)) {
+      const normalizedPath = path.replace(/\\/g, '/');
+      if (!normalizedPath.startsWith(supportPrefix) || !mod?.frontmatter) continue;
+      const f = mod.frontmatter;
+      supportPlans.push({
+        title: f.title,
+        price: Number(f.price),
+        duration: String(f.duration ?? ''),
+        description: String(f.description ?? ''),
+        features: Array.isArray(f.features) ? f.features : [],
+        recommended: Boolean(f.recommended),
+      });
+    }
+    supportPlans.sort((a, b) => a.price - b.price);
+
+    return {
+      params: { empresa },
+      props: {
+        plans,
+        supportPlans,
+        empresaName: EMPRESA_NAMES[empresa] ?? empresa.charAt(0).toUpperCase() + empresa.slice(1),
+        logo: getLogo(empresa),
+      },
+    };
+  });
+}
+
+const { plans, supportPlans = [], empresaName, logo } = Astro.props;
+const empresa = Astro.params.empresa!;
+---
+
+<BaseLayout
+  title={empresaName}
+  description={`Planes de desarrollo para ${empresaName}. Precios y características.`}
+>
+  <div class="max-w-6xl mx-auto space-y-12 sm:space-y-16 lg:space-y-20">
+    <div class="min-w-0">
+      <a href="/" class="inline-flex items-center gap-2 text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-400 transition-colors mb-4">
+        <ArrowLeft size={18} strokeWidth={2} />
+        Volver al inicio
+      </a>
+      <div class="mt-3 sm:mt-4 flex flex-wrap items-center gap-4 sm:gap-6">
+        {logo && (
+          <div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+            <img
+              src={logo}
+              alt=""
+              class="w-full h-full object-contain p-1"
+              width="80"
+              height="80"
+              transition:name={`logo-${empresa}`}
+            />
+          </div>
+        )}
+        <div class="min-w-0">
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-900 dark:text-neutral-50 tracking-tight">Planes para {empresaName}</h1>
+          <p class="mt-2 text-base sm:text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
+            Elige el plan que mejor se adapte a tu negocio. Todos incluyen soporte y entrega profesional.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <section class="min-w-0">
+      <PricingGrid plans={plans} />
+    </section>
+
+    <section class="min-w-0">
+      <h2 class="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50 mb-3 sm:mb-4 flex items-center gap-2">
+        <Table2 size={24} strokeWidth={1.75} class="text-neutral-700 dark:text-neutral-400 shrink-0" />
+        Comparativa de planes
+      </h2>
+      <div class="overflow-x-auto -mx-4 sm:mx-0 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm [scrollbar-width:thin]">
+        <table class="w-full min-w-[480px] text-left text-sm">
+          <thead>
+            <tr class="border-b border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900">
+              <th class="px-3 sm:px-4 py-3 font-semibold text-neutral-900 dark:text-neutral-50 whitespace-nowrap">Característica</th>
+              {plans.map((p) => (
+                <th class="px-3 sm:px-4 py-3 font-semibold text-neutral-900 dark:text-neutral-50 min-w-[120px]">
+                  <span>{p.title}</span>
+                  {p.recommended && (
+                    <span class="block mt-0.5 text-xs font-normal text-neutral-700 dark:text-neutral-400">(Recomendado)</span>
+                  )}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-neutral-200 dark:border-neutral-800">
+              <td class="px-3 sm:px-4 py-3 text-neutral-600 dark:text-neutral-400 font-medium">Precio</td>
+              {plans.map((p) => (
+                <td class="px-3 sm:px-4 py-3 font-medium text-neutral-900 dark:text-neutral-50 whitespace-nowrap">{p.price.toLocaleString('es-ES')} $ / {p.duration}</td>
+              ))}
+            </tr>
+            {Array.from({ length: Math.max(0, ...plans.map((p) => p.features.length)) }, (_, i) => (
+              <tr class="border-b border-neutral-200 dark:border-neutral-800">
+                <td class="px-3 sm:px-4 py-3 text-neutral-600 dark:text-neutral-400 align-top pt-3">Incluido</td>
+                {plans.map((p) => (
+                  <td class="px-3 sm:px-4 py-3 text-neutral-900 dark:text-neutral-50 align-top pt-3">{p.features[i] ?? '—'}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-5 sm:p-6 lg:p-8 min-w-0">
+      <h2 class="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50 mb-3 sm:mb-4 flex items-center gap-2">
+        <Headphones size={24} strokeWidth={1.75} class="text-neutral-700 dark:text-neutral-400 shrink-0" />
+        {supportPlans.length > 0 ? 'Planes de acompañamiento (mensual)' : 'Planes de soporte'}
+      </h2>
+      {supportPlans.length > 0 ? (
+        <>
+          <p class="text-neutral-600 dark:text-neutral-400 mb-6 text-sm sm:text-base leading-relaxed">
+            Tras la entrega del proyecto puedes contratar un plan de acompañamiento mensual con hosting,
+            soporte y mejoras según el nivel que elijas.
+          </p>
+          <PricingGrid plans={supportPlans} />
+        </>
+      ) : (
+        <>
+          <p class="text-neutral-600 dark:text-neutral-400 mb-4 text-sm sm:text-base leading-relaxed">
+            Tras la entrega del proyecto puedes contratar soporte mensual o por horas para mantenimiento,
+            actualizaciones y mejoras.
+          </p>
+          <ul class="space-y-2.5 sm:space-y-3 text-sm sm:text-base text-neutral-900 dark:text-neutral-50">
+            <li class="flex items-start gap-2.5">
+              <span class="text-neutral-700 dark:text-neutral-400 shrink-0 mt-0.5"><Check size={18} strokeWidth={2.5} /></span>
+              <span><strong class="font-semibold">Soporte básico:</strong> correo electrónico, respuesta en 48h.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="text-neutral-700 dark:text-neutral-400 shrink-0 mt-0.5"><Check size={18} strokeWidth={2.5} /></span>
+              <span><strong class="font-semibold">Soporte prioritario:</strong> respuesta en 24h y videollamadas puntuales.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="text-neutral-700 dark:text-neutral-400 shrink-0 mt-0.5"><Check size={18} strokeWidth={2.5} /></span>
+              <span><strong class="font-semibold">Horas de desarrollo:</strong> bloques de horas para cambios o nuevas funcionalidades.</span>
+            </li>
+          </ul>
+        </>
+      )}
+    </section>
+
+    <section class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 p-5 sm:p-6 lg:p-8 min-w-0">
+      <h2 class="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50 mb-3 sm:mb-4 flex items-center gap-2">
+        <Info size={24} strokeWidth={1.75} class="text-neutral-700 dark:text-neutral-400 shrink-0" />
+        Notas sobre la inversión
+      </h2>
+      <ul class="space-y-2.5 sm:space-y-3 text-sm sm:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed list-disc list-inside marker:text-neutral-700 dark:marker:text-neutral-400">
+        <li>Los precios son orientativos y pueden ajustarse según alcance y requisitos específicos.</li>
+        <li>La duración indica el plazo estimado de desarrollo; el mantenimiento posterior es opcional.</li>
+        <li>Incluimos una reunión inicial sin compromiso para definir el alcance y el presupuesto final.</li>
+        <li>Formas de pago: transferencia, 50% al inicio y 50% a la entrega, o en cuotas según el plan.</li>
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

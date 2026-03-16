@@ -1,0 +1,62 @@
+---
+import { Check, Sparkles } from '@lucide/astro';
+
+interface Props {
+  title: string;
+  price: number;
+  duration: string;
+  description: string;
+  features: string[];
+  recommended?: boolean;
+}
+
+const { title, price, duration, description, features, recommended = false } = Astro.props;
+---
+
+<div
+  class:list={[
+    'relative rounded-2xl border-2 p-5 sm:p-6 lg:p-8 flex flex-col h-full transition-all duration-200 overflow-hidden',
+    recommended
+      ? 'border-emerald-300 dark:border-emerald-700 bg-emerald-50/80 dark:bg-emerald-950/40 shadow-md sm:scale-[1.02] lg:scale-[1.03] z-10'
+      : 'border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 hover:border-neutral-700/40 dark:hover:border-neutral-400/40 hover:shadow-md',
+  ]}
+>
+  {recommended && (
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-b-lg bg-emerald-600 dark:bg-emerald-500 text-white text-[10px] sm:text-xs font-semibold uppercase tracking-wide shadow-sm flex items-center gap-1.5 justify-center">
+      <Sparkles size={12} strokeWidth={2} />
+      Recomendado
+    </div>
+  )}
+  <div class={recommended ? 'mt-5 sm:mt-6' : 'mb-5 sm:mb-6'}>
+    <h3 class="text-lg sm:text-xl font-bold text-neutral-900 dark:text-neutral-50">{title}</h3>
+    <p class="mt-1.5 sm:mt-2 text-sm text-neutral-600 dark:text-neutral-400 leading-snug">{description}</p>
+  </div>
+  <div class="mt-auto space-y-4 sm:space-y-5 pt-1">
+    <div class="flex items-baseline flex-wrap gap-x-1 gap-y-0.5">
+      <span class="text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50 tabular-nums">{price.toLocaleString('es-ES')}</span>
+      <span class="text-neutral-600 dark:text-neutral-400 text-lg sm:text-xl">$</span>
+      <span class="text-neutral-600 dark:text-neutral-400 text-xs sm:text-sm">/ {duration}</span>
+    </div>
+    <ul class="space-y-2.5 sm:space-y-3">
+      {features.map((feature) => (
+        <li class="flex items-start gap-2 text-sm text-neutral-900 dark:text-neutral-50 leading-snug">
+          <span class="text-neutral-700 dark:text-neutral-400 mt-0.5 shrink-0 w-5 h-5 flex items-center justify-center rounded-full bg-neutral-700/15 dark:bg-neutral-400/15" aria-hidden="true">
+            <Check size={12} strokeWidth={2.5} />
+          </span>
+          <span>{feature}</span>
+        </li>
+      ))}
+    </ul>
+    <a
+      href="#solicitar"
+      class:list={[
+        'block w-full min-h-[44px] sm:min-h-[48px] flex items-center justify-center py-3 px-4 rounded-xl text-center font-semibold text-sm transition-colors touch-manipulation active:scale-[0.98]',
+        recommended
+          ? 'bg-emerald-600 dark:bg-emerald-500 text-white hover:opacity-90 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-neutral-50 dark:focus:ring-offset-neutral-950'
+          : 'bg-neutral-900 dark:bg-neutral-50 text-neutral-50 dark:text-neutral-900 hover:opacity-90 focus:ring-2 focus:ring-neutral-900 dark:focus:ring-neutral-50 focus:ring-offset-2 focus:ring-offset-neutral-50 dark:focus:ring-offset-neutral-950',
+      ]}
+    >
+      Solicitar este plan
+    </a>
+  </div>
+</div>

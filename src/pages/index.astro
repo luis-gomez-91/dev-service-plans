@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Briefcase, ArrowRight } from '@lucide/astro';
+
+const companiesModules = import.meta.glob<{ frontmatter: { empresas: string[] } }>(
+  '../content/companies/companies.md',
+  { eager: true }
+);
+const listEntry = Object.values(companiesModules)[0];
+const slugs = listEntry?.frontmatter?.empresas ?? [];
+
+const descriptionModules = import.meta.glob<{
+  frontmatter: { name: string; description: string; logo: string };
+}>('../content/companies/*/description.md', { eager: true });
+
+const descriptionBySlug = new Map<string, { name: string; description: string; logo: string }>();
+for (const [path, mod] of Object.entries(descriptionModules)) {
+  const normalized = path.replace(/\\/g, '/');
+  const match = normalized.match(/companies\/([^/]+)\/description\.md$/);
+  if (match?.[1] && mod?.frontmatter) descriptionBySlug.set(match[1], mod.frontmatter);
+}
+
+const empresas = slugs
+  .map((slug) => ({ slug, data: descriptionBySlug.get(slug) ?? null }))
+  .filter((e): e is { slug: string; data: { name: string; description: string; logo: string } } =>
+    Boolean(e.data)
+  );
+---
+
+<BaseLayout title="Inicio" description="Planes de desarrollo freelance ASOMI: asistencia médica ocupacional, Sabor vinceño, Dos Tragos y más.">
+  <div class="space-y-10 sm:space-y-14 lg:space-y-16">
+    <div class="text-center max-w-2xl mx-auto px-1">
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-neutral-700/10 dark:bg-neutral-400/10 text-neutral-700 dark:text-neutral-400 mb-4">
+        <Briefcase size={24} strokeWidth={1.75} />
+      </div>
+      <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] font-bold text-neutral-900 dark:text-neutral-50 tracking-tight leading-tight">
+        Planes de desarrollo
+      </h1>
+      <p class="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
+        Servicios de desarrollo de software freelance adaptados a cada empresa.
+      </p>
+    </div>
+
+    <ul class="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
+      {empresas.map((empresa) => (
+        <li class="min-h-[280px] sm:min-h-[320px]">
+          <a
+            href={`/${empresa.slug}`}
+            class="h-full flex flex-col p-5 sm:p-6 rounded-2xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 shadow-sm hover:border-neutral-700/50 dark:hover:border-neutral-400/50 hover:shadow-md active:scale-[0.99] transition-all duration-200 group touch-manipulation"
+          >
+            <div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+              <img
+                src={empresa.data.logo}
+                alt=""
+                class="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity p-1"
+                width="80"
+                height="80"
+                transition:name={`logo-${empresa.slug}`}
+              />
+            </div>
+            <h2 class="mt-3 sm:mt-4 shrink-0 text-xl sm:text-2xl font-semibold text-neutral-900 dark:text-neutral-50 group-hover:text-neutral-700 dark:group-hover:text-neutral-400 transition-colors line-clamp-1">
+              {empresa.data.name}
+            </h2>
+            <p class="mt-2 flex-1 min-h-0 text-neutral-600 dark:text-neutral-400 text-sm sm:text-base leading-snug line-clamp-3">
+              {empresa.data.description}
+            </p>
+            <span class="mt-4 shrink-0 inline-flex items-center text-sm font-medium text-neutral-700 dark:text-neutral-400 group-hover:underline gap-1.5">
+              Ver planes
+              <ArrowRight size={16} strokeWidth={2} />
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</BaseLayout>
