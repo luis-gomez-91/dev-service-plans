@@ -8,9 +8,19 @@ interface Props {
   description: string;
   features: string[];
   recommended?: boolean;
+  /** Nombre de la empresa (para el mensaje de WhatsApp) */
+  empresaName?: string;
 }
 
-const { title, price, duration, description, features, recommended = false } = Astro.props;
+const { title, price, duration, description, features, recommended = false, empresaName } = Astro.props;
+
+const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER ?? '';
+const message = empresaName
+  ? `Hola, deseo solicitar el plan "${title}" para la empresa ${empresaName}. Gracias.`
+  : `Hola, deseo solicitar el plan "${title}". Gracias.`;
+const whatsappUrl = whatsappNumber
+  ? `https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`
+  : '/contacto';
 ---
 
 <div
@@ -48,7 +58,9 @@ const { title, price, duration, description, features, recommended = false } = A
       ))}
     </ul>
     <a
-      href="#solicitar"
+      href={whatsappUrl}
+      target={whatsappNumber ? '_blank' : undefined}
+      rel={whatsappNumber ? 'noopener noreferrer' : undefined}
       class:list={[
         'block w-full min-h-[44px] sm:min-h-[48px] flex items-center justify-center py-3 px-4 rounded-xl text-center font-semibold text-sm transition-colors touch-manipulation active:scale-[0.98]',
         recommended

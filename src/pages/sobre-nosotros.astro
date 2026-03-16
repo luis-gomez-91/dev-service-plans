@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Users, Code, Target, Heart } from '@lucide/astro';
+---
+
+<BaseLayout
+  title="Sobre nosotros"
+  description="Conoce a Dev Service Plans: desarrollo de software freelance con planes adaptados por industria."
+>
+  <div class="max-w-2xl mx-auto space-y-10">
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-neutral-700/10 dark:bg-neutral-400/10 text-neutral-700 dark:text-neutral-400 mb-4">
+        <Users size={24} strokeWidth={1.75} />
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50 tracking-tight">
+        Sobre nosotros
+      </h1>
+      <p class="mt-3 text-neutral-600 dark:text-neutral-400 leading-relaxed">
+        Desarrollo de software freelance con planes pensados para cada tipo de negocio.
+      </p>
+    </div>
+
+    <div class="prose prose-neutral dark:prose-invert max-w-none space-y-6 text-neutral-600 dark:text-neutral-400">
+      <section class="flex gap-4">
+        <div class="shrink-0 w-10 h-10 rounded-lg bg-neutral-200/80 dark:bg-neutral-700/80 flex items-center justify-center text-neutral-700 dark:text-neutral-300">
+          <Code size={20} strokeWidth={1.75} />
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mt-0 mb-2">Qué hacemos</h2>
+          <p class="mt-0">
+            Ofrecemos planes de desarrollo y soporte de software adaptados por industria. Cada empresa tiene necesidades distintas: aquí encontrarás opciones claras, con precios y alcance definidos, para que puedas elegir lo que mejor encaje con tu proyecto.
+          </p>
+        </div>
+      </section>
+
+      <section class="flex gap-4">
+        <div class="shrink-0 w-10 h-10 rounded-lg bg-neutral-200/80 dark:bg-neutral-700/80 flex items-center justify-center text-neutral-700 dark:text-neutral-300">
+          <Target size={20} strokeWidth={1.75} />
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mt-0 mb-2">A quién nos dirigimos</h2>
+          <p class="mt-0">
+            Trabajamos con pymes y negocios que necesitan desarrollo web, mantenimiento o soporte técnico sin asumir un equipo interno. Los planes están organizados por sector (asistencia médica, hostelería, etc.) para que sea más fácil encontrar lo que buscas.
+          </p>
+        </div>
+      </section>
+
+      <section class="flex gap-4">
+        <div class="shrink-0 w-10 h-10 rounded-lg bg-neutral-200/80 dark:bg-neutral-700/80 flex items-center justify-center text-neutral-700 dark:text-neutral-300">
+          <Heart size={20} strokeWidth={1.75} />
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mt-0 mb-2">Cómo trabajamos</h2>
+          <p class="mt-0">
+            Priorizamos la claridad: precios visibles, inclusiones definidas y comunicación directa. Si tu industria aún no tiene un plan publicado, puedes consultarnos por WhatsApp o desde la página de contacto; valoramos cada solicitud y adaptamos cuando tiene sentido.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <p class="text-center">
+      <a
+        href="/contacto"
+        class="inline-flex items-center justify-center rounded-lg bg-neutral-800 dark:bg-neutral-200 text-white dark:text-neutral-900 px-5 py-2.5 text-sm font-medium hover:bg-neutral-700 dark:hover:bg-neutral-300 transition-colors"
+      >
+        Solicitar información
+      </a>
+    </p>
+  </div>
+</BaseLayout>

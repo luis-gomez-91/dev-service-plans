@@ -1,15 +1,16 @@
 ---
 import '../styles/global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
 import { ViewTransitions } from 'astro:transitions';
-import { LayoutDashboard, ExternalLink } from '@lucide/astro';
+import { LayoutDashboard } from '@lucide/astro';
 
 interface Props {
   title: string;
   description?: string;
 }
 
-const { title, description = 'Planes de servicios de desarrollo freelance para tu negocio.' } = Astro.props;
+const { title, description = 'Desarrollo web, apps móviles, landing pages, bases de datos, pasarelas de pago, IA y chatbots. Planes por industria para pymes. Dev Service Plans.' } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -66,6 +67,16 @@ const { title, description = 'Planes de servicios de desarrollo freelance para t
           setTheme(isDark() ? 'light' : 'dark');
         });
 
+        /* Sincronizar con el tema del sistema/navegador cuando no hay preferencia guardada */
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+          if (localStorage.getItem(storageKey) !== null && localStorage.getItem(storageKey) !== '') return;
+          var theme = e.matches ? 'dark' : 'light';
+          root.classList.toggle('dark', theme === 'dark');
+          root.setAttribute('data-theme', theme);
+          root.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
+          updateIcons();
+        });
+
         function initIcons() {
           updateIcons();
         }
@@ -85,17 +96,47 @@ const { title, description = 'Planes de servicios de desarrollo freelance para t
           <span class="text-neutral-700 dark:text-neutral-400 shrink-0 [&_svg]:stroke-current"><LayoutDashboard size={22} strokeWidth={1.75} /></span>
           <span>Dev Service Plans</span>
         </a>
-        <nav class="flex items-center gap-1 sm:gap-2 shrink-0">
-          <ThemeToggle />
+        <nav class="flex items-center gap-1 sm:gap-2 shrink-0" aria-label="Principal">
           <a
-            href="https://lgomez.dev"
+            href="/"
+            class="nav-link py-2 px-3 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-colors touch-manipulation"
+          >
+            Inicio
+          </a>
+          <a
+            href="/planes"
+            class="nav-link py-2 px-3 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-colors touch-manipulation"
+          >
+            Planes
+          </a>
+          <a
+            href="/#servicios"
+            class="nav-link py-2 px-3 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-colors touch-manipulation"
+          >
+            Servicios
+          </a>
+          <a
+            href="/sobre-nosotros"
+            class="nav-link py-2 px-3 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-colors touch-manipulation"
+          >
+            Sobre nosotros
+          </a>
+          <a
+            href="/#contacto"
+            class="nav-link py-2 px-3 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-colors touch-manipulation"
+          >
+            Contacto
+          </a>
+          <span class="w-px h-5 bg-neutral-300 dark:bg-neutral-600 mx-1 hidden sm:inline-block" aria-hidden="true" />
+          <a
+            href="https://lgomez.dev/projects"
             target="_blank"
             rel="noopener noreferrer"
-            class="nav-link flex items-center gap-1.5 py-2 px-3 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-colors touch-manipulation"
+            class="nav-link py-2 px-3 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-400 transition-colors touch-manipulation"
           >
-            <span class="hidden sm:inline">lgomez.dev</span>
-            <ExternalLink size={16} strokeWidth={1.75} />
+            Portafolio
           </a>
+          <ThemeToggle />
         </nav>
       </div>
     </header>
@@ -104,11 +145,13 @@ const { title, description = 'Planes de servicios de desarrollo freelance para t
       <slot />
     </main>
 
+    <WhatsAppFloat />
+
     <footer class="border-t border-neutral-200 dark:border-neutral-800 bg-neutral-100/60 dark:bg-neutral-900/60 mt-auto pb-[env(safe-area-inset-bottom)]">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6 text-center">
         <p class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 max-w-xl mx-auto">
           © {new Date().getFullYear()} Dev Service Plans. Planes de desarrollo freelance por industria.
-          <a href="https://lgomez.dev" target="_blank" rel="noopener noreferrer" class="text-neutral-700 dark:text-neutral-400 hover:underline ml-1">lgomez.dev</a>
+          <a href="https://lgomez.dev/projects" target="_blank" rel="noopener noreferrer" class="text-neutral-700 dark:text-neutral-400 hover:underline ml-1">Portafolio</a>
         </p>
       </div>
     </footer>

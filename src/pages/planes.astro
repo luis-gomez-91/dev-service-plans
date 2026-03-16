@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { ArrowRight, HelpCircle } from '@lucide/astro';
+
+const companiesModules = import.meta.glob<{ frontmatter: { empresas: string[] } }>(
+  '../content/companies/companies.md',
+  { eager: true }
+);
+const listEntry = Object.values(companiesModules)[0];
+const slugs = listEntry?.frontmatter?.empresas ?? [];
+
+const descriptionModules = import.meta.glob<{
+  frontmatter: { name: string; description: string; logo: string; favorito?: boolean };
+}>('../content/companies/*/description.md', { eager: true });
+
+const descriptionBySlug = new Map<string, { name: string; description: string; logo: string; favorito?: boolean }>();
+for (const [path, mod] of Object.entries(descriptionModules)) {
+  const normalized = path.replace(/\\/g, '/');
+  const match = normalized.match(/companies\/([^/]+)\/description\.md$/);
+  if (match?.[1] && mod?.frontmatter) descriptionBySlug.set(match[1], mod.frontmatter);
+}
+
+const empresas = slugs
+  .map((slug) => ({ slug, data: descriptionBySlug.get(slug) ?? null }))
+  .filter((e): e is { slug: string; data: { name: string; description: string; logo: string; favorito?: boolean } } =>
+    Boolean(e.data)
+  );
+---
+
+<BaseLayout
+  title="Planes"
+  description="Planes de desarrollo por industria. ASOMI, Sabor vinceño, Dos Tragos y más. Precios claros."
+>
+  <div class="space-y-10 sm:space-y-14 lg:space-y-16">
+    <div class="text-center max-w-2xl mx-auto px-1">
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-900 dark:text-neutral-50 tracking-tight leading-tight">
+        Planes por sector
+      </h1>
+      <p class="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
+        Elige tu industria y revisa precios, alcance y opciones de soporte.
+      </p>
+    </div>
+
+    <h2 class="sr-only">Listado de planes por industria</h2>
+    <ul class="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-stretch" aria-label="Planes por industria">
+      {empresas.map((empresa) => (
+        <li class="min-h-[280px] sm:min-h-[320px]">
+          <a
+            href={`/${empresa.slug}`}
+            class="card-link h-full flex flex-col p-5 sm:p-6 rounded-2xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 shadow-sm active:scale-[0.99] transition-all duration-300 ease-out group touch-manipulation"
+          >
+            <div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 overflow-hidden transition-colors duration-300 group-hover:bg-neutral-200/80 dark:group-hover:bg-neutral-800">
+              <img
+                src={empresa.data.logo}
+                alt=""
+                class="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-300 p-1"
+                width="80"
+                height="80"
+                transition:name={`logo-${empresa.slug}`}
+              />
+            </div>
+            <h2 class="mt-3 sm:mt-4 shrink-0 text-xl sm:text-2xl font-semibold text-neutral-900 dark:text-neutral-50 transition-colors duration-300 line-clamp-1 group-hover:text-neutral-800 dark:group-hover:text-white">
+              {empresa.data.name}
+            </h2>
+            <p class="mt-2 flex-1 min-h-0 text-neutral-600 dark:text-neutral-400 text-sm sm:text-base leading-snug line-clamp-3 transition-colors duration-300 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
+              {empresa.data.description}
+            </p>
+            <span class="mt-4 shrink-0 inline-flex items-center text-sm font-medium text-neutral-700 dark:text-neutral-400 gap-1.5 transition-all duration-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 group-hover:gap-2">
+              Ver planes
+              <ArrowRight size={16} strokeWidth={2} class="transition-transform duration-300 group-hover:translate-x-0.5" />
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="text-center pt-4 sm:pt-6">
+      <p class="inline-flex flex-wrap items-center justify-center gap-1.5 text-sm text-neutral-600 dark:text-neutral-400">
+        <HelpCircle size={18} strokeWidth={1.75} class="shrink-0 text-neutral-500 dark:text-neutral-500" />
+        <span>¿Tu sector no está?</span>
+        <a href="/sobre-nosotros" class="font-medium text-neutral-800 dark:text-neutral-200 hover:underline">Conócenos</a>
+        <span>o</span>
+        <a href="/contacto" class="font-medium text-neutral-800 dark:text-neutral-200 hover:underline">contáctanos</a>
+      </p>
+    </div>
+  </div>
+</BaseLayout>

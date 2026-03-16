@@ -128,7 +128,7 @@ const empresa = Astro.params.empresa!;
     </div>
 
     <section class="min-w-0">
-      <PricingGrid plans={plans} />
+      <PricingGrid plans={plans} empresaName={empresaName} />
     </section>
 
     <section class="min-w-0">
@@ -182,7 +182,7 @@ const empresa = Astro.params.empresa!;
             Tras la entrega del proyecto puedes contratar un plan de acompañamiento mensual con hosting,
             soporte y mejoras según el nivel que elijas.
           </p>
-          <PricingGrid plans={supportPlans} />
+          <PricingGrid plans={supportPlans} empresaName={empresaName} />
         </>
       ) : (
         <>

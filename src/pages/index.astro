@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { Briefcase, ArrowRight } from '@lucide/astro';
+import ContactSection from '../components/ContactSection.astro';
+import { Briefcase, ArrowRight, Globe, Smartphone, Database, CreditCard, MessageCircle, Headphones, Camera, Megaphone } from '@lucide/astro';
 
 const companiesModules = import.meta.glob<{ frontmatter: { empresas: string[] } }>(
   '../content/companies/companies.md',
@@ -10,67 +11,235 @@ const listEntry = Object.values(companiesModules)[0];
 const slugs = listEntry?.frontmatter?.empresas ?? [];
 
 const descriptionModules = import.meta.glob<{
-  frontmatter: { name: string; description: string; logo: string };
+  frontmatter: { name: string; description: string; logo: string; favorito?: boolean };
 }>('../content/companies/*/description.md', { eager: true });
 
-const descriptionBySlug = new Map<string, { name: string; description: string; logo: string }>();
+const descriptionBySlug = new Map<string, { name: string; description: string; logo: string; favorito?: boolean }>();
 for (const [path, mod] of Object.entries(descriptionModules)) {
   const normalized = path.replace(/\\/g, '/');
   const match = normalized.match(/companies\/([^/]+)\/description\.md$/);
   if (match?.[1] && mod?.frontmatter) descriptionBySlug.set(match[1], mod.frontmatter);
 }
 
-const empresas = slugs
+const todasEmpresas = slugs
   .map((slug) => ({ slug, data: descriptionBySlug.get(slug) ?? null }))
-  .filter((e): e is { slug: string; data: { name: string; description: string; logo: string } } =>
+  .filter((e): e is { slug: string; data: { name: string; description: string; logo: string; favorito?: boolean } } =>
     Boolean(e.data)
   );
+const favoritos = todasEmpresas.filter((e) => e.data.favorito === true).slice(0, 3);
 ---
 
-<BaseLayout title="Inicio" description="Planes de desarrollo freelance ASOMI: asistencia médica ocupacional, Sabor vinceño, Dos Tragos y más.">
-  <div class="space-y-10 sm:space-y-14 lg:space-y-16">
-    <div class="text-center max-w-2xl mx-auto px-1">
-      <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-neutral-700/10 dark:bg-neutral-400/10 text-neutral-700 dark:text-neutral-400 mb-4">
-        <Briefcase size={24} strokeWidth={1.75} />
+<BaseLayout
+  title="Inicio"
+  description="Desarrollo web, aplicaciones móviles, landing pages, bases de datos, backups, pasarelas de pago, IA y chatbots. Planes por industria para pymes. Precios claros. Dev Service Plans."
+>
+  <div class="flex flex-col">
+    <!-- Hero: zona limpia, sin fondo -->
+    <section class="w-screen relative left-1/2 -translate-x-1/2 py-12 sm:py-16 lg:py-20 text-center bg-neutral-50 dark:bg-neutral-950" aria-labelledby="hero-heading">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mx-auto">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 mb-4">
+            <Briefcase size={24} strokeWidth={1.75} />
+          </div>
+          <h1 id="hero-heading" class="text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] font-bold text-neutral-900 dark:text-neutral-50 tracking-tight leading-tight">
+            Desarrollo web y apps para tu negocio
+          </h1>
+          <p class="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
+            Webs, aplicaciones móviles, cobros online, chatbots, IA y páginas de captación. Planes por industria con precios claros.
+          </p>
+        </div>
       </div>
-      <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] font-bold text-neutral-900 dark:text-neutral-50 tracking-tight leading-tight">
-        Planes de desarrollo
-      </h1>
-      <p class="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
-        Servicios de desarrollo de software freelance adaptados a cada empresa.
-      </p>
-    </div>
+    </section>
 
-    <ul class="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
-      {empresas.map((empresa) => (
-        <li class="min-h-[280px] sm:min-h-[320px]">
-          <a
-            href={`/${empresa.slug}`}
-            class="card-link h-full flex flex-col p-5 sm:p-6 rounded-2xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 shadow-sm active:scale-[0.99] transition-all duration-300 ease-out group touch-manipulation"
-          >
-            <div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 overflow-hidden transition-colors duration-300 group-hover:bg-neutral-200/80 dark:group-hover:bg-neutral-800">
-              <img
-                src={empresa.data.logo}
-                alt=""
-                class="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-300 p-1"
-                width="80"
-                height="80"
-                transition:name={`logo-${empresa.slug}`}
-              />
-            </div>
-            <h2 class="mt-3 sm:mt-4 shrink-0 text-xl sm:text-2xl font-semibold text-neutral-900 dark:text-neutral-50 transition-colors duration-300 line-clamp-1 group-hover:text-neutral-800 dark:group-hover:text-white">
-              {empresa.data.name}
-            </h2>
-            <p class="mt-2 flex-1 min-h-0 text-neutral-600 dark:text-neutral-400 text-sm sm:text-base leading-snug line-clamp-3 transition-colors duration-300 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
-              {empresa.data.description}
-            </p>
-            <span class="mt-4 shrink-0 inline-flex items-center text-sm font-medium text-neutral-700 dark:text-neutral-400 gap-1.5 transition-all duration-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 group-hover:gap-2">
-              Ver planes
-              <ArrowRight size={16} strokeWidth={2} class="transition-transform duration-300 group-hover:translate-x-0.5" />
-            </span>
-          </a>
+    <!-- Servicios: bloque tipo “panel” con fondo y borde -->
+    <section id="servicios" class="w-screen relative left-1/2 -translate-x-1/2 scroll-mt-20 py-12 sm:py-14 lg:py-16 bg-stone-100 dark:bg-stone-900/90" aria-labelledby="servicios-heading">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+        <h2 id="servicios-heading" class="section-title text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50 text-center mb-2">
+          Nuestros servicios
+        </h2>
+        <p class="text-center text-sm text-neutral-500 dark:text-neutral-400 mb-6 sm:mb-8">Desarrollo, datos, pagos y soporte</p>
+        <ul class="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 text-left">
+        <li class="flex gap-3 p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/50">
+          <div class="shrink-0 w-10 h-10 rounded-lg bg-neutral-200/80 dark:bg-neutral-700/80 flex items-center justify-center text-neutral-700 dark:text-neutral-300">
+            <Globe size={20} strokeWidth={1.75} />
+          </div>
+          <div class="min-w-0">
+            <h3 class="font-semibold text-neutral-900 dark:text-neutral-50">Webs y landing pages</h3>
+            <p class="mt-0.5 text-sm text-neutral-600 dark:text-neutral-400">Sitios corporativos, páginas de captación y tiendas sencillas. Diseño adaptable a móvil y escritorio.</p>
+          </div>
         </li>
-      ))}
-    </ul>
+        <li class="flex gap-3 p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/50">
+          <div class="shrink-0 w-10 h-10 rounded-lg bg-neutral-200/80 dark:bg-neutral-700/80 flex items-center justify-center text-neutral-700 dark:text-neutral-300">
+            <Smartphone size={20} strokeWidth={1.75} />
+          </div>
+          <div class="min-w-0">
+            <h3 class="font-semibold text-neutral-900 dark:text-neutral-50">Apps web y móviles</h3>
+            <p class="mt-0.5 text-sm text-neutral-600 dark:text-neutral-400">Aplicaciones a medida, paneles de administración y herramientas para tu equipo.</p>
+          </div>
+        </li>
+        <li class="flex gap-3 p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/50">
+          <div class="shrink-0 w-10 h-10 rounded-lg bg-neutral-200/80 dark:bg-neutral-700/80 flex items-center justify-center text-neutral-700 dark:text-neutral-300">
+            <Database size={20} strokeWidth={1.75} />
+          </div>
+          <div class="min-w-0">
+            <h3 class="font-semibold text-neutral-900 dark:text-neutral-50">Bases de datos y copias de seguridad</h3>
+            <p class="mt-0.5 text-sm text-neutral-600 dark:text-neutral-400">Diseño de datos, migraciones y backups automáticos para no perder información.</p>
+          </div>
+        </li>
+        <li class="flex gap-3 p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/50">
+          <div class="shrink-0 w-10 h-10 rounded-lg bg-neutral-200/80 dark:bg-neutral-700/80 flex items-center justify-center text-neutral-700 dark:text-neutral-300">
+            <CreditCard size={20} strokeWidth={1.75} />
+          </div>
+          <div class="min-w-0">
+            <h3 class="font-semibold text-neutral-900 dark:text-neutral-50">Cobros online y pasarelas de pago</h3>
+            <p class="mt-0.5 text-sm text-neutral-600 dark:text-neutral-400">Integración de pagos con tarjeta, transferencias y enlaces de pago en tu web o app.</p>
+          </div>
+        </li>
+        <li class="flex gap-3 p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/50">
+          <div class="shrink-0 w-10 h-10 rounded-lg bg-neutral-200/80 dark:bg-neutral-700/80 flex items-center justify-center text-neutral-700 dark:text-neutral-300">
+            <MessageCircle size={20} strokeWidth={1.75} />
+          </div>
+          <div class="min-w-0">
+            <h3 class="font-semibold text-neutral-900 dark:text-neutral-50">Chatbots e inteligencia artificial</h3>
+            <p class="mt-0.5 text-sm text-neutral-600 dark:text-neutral-400">Asistentes automáticos para atención al cliente, consultas y tareas repetitivas.</p>
+          </div>
+        </li>
+        <li class="flex gap-3 p-4 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/50">
+          <div class="shrink-0 w-10 h-10 rounded-lg bg-neutral-200/80 dark:bg-neutral-700/80 flex items-center justify-center text-neutral-700 dark:text-neutral-300">
+            <Headphones size={20} strokeWidth={1.75} />
+          </div>
+          <div class="min-w-0">
+            <h3 class="font-semibold text-neutral-900 dark:text-neutral-50">Mantenimiento y soporte</h3>
+            <p class="mt-0.5 text-sm text-neutral-600 dark:text-neutral-400">Actualizaciones, correcciones y soporte técnico cuando lo necesites.</p>
+          </div>
+        </li>
+      </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Planes: ancho completo, neutral -->
+    {favoritos.length > 0 && (
+      <section class="w-screen relative left-1/2 -translate-x-1/2 py-12 sm:py-14 lg:py-16 bg-neutral-100 dark:bg-neutral-900/90" aria-labelledby="planes-heading">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+        <h2 id="planes-heading" class="section-title text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50 text-center mb-2">
+          Planes realizados a medida
+        </h2>
+        <p class="text-center text-sm text-neutral-500 dark:text-neutral-400 mb-6 sm:mb-8">Destacados</p>
+        <ul class="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-3 items-stretch max-w-4xl mx-auto" aria-label="Planes destacados">
+          {favoritos.map((empresa) => (
+            <li class="min-h-[280px] sm:min-h-[320px]">
+              <a
+                href={`/${empresa.slug}`}
+                class="card-link h-full flex flex-col p-5 sm:p-6 rounded-2xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 shadow-sm active:scale-[0.99] transition-all duration-300 ease-out group touch-manipulation"
+              >
+                <div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 overflow-hidden transition-colors duration-300 group-hover:bg-neutral-200/80 dark:group-hover:bg-neutral-800">
+                  <img
+                    src={empresa.data.logo}
+                    alt=""
+                    class="w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-300 p-1"
+                    width="80"
+                    height="80"
+                    transition:name={`logo-${empresa.slug}`}
+                  />
+                </div>
+                <h3 class="mt-3 sm:mt-4 shrink-0 text-xl sm:text-2xl font-semibold text-neutral-900 dark:text-neutral-50 transition-colors duration-300 line-clamp-1 group-hover:text-neutral-800 dark:group-hover:text-white">
+                  {empresa.data.name}
+                </h3>
+                <p class="mt-2 flex-1 min-h-0 text-neutral-600 dark:text-neutral-400 text-sm sm:text-base leading-snug line-clamp-3 transition-colors duration-300 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
+                  {empresa.data.description}
+                </p>
+                <span class="mt-4 shrink-0 inline-flex items-center text-sm font-medium text-neutral-700 dark:text-neutral-400 gap-1.5 transition-all duration-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 group-hover:gap-2">
+                  Ver planes
+                  <ArrowRight size={16} strokeWidth={2} class="transition-transform duration-300 group-hover:translate-x-0.5" />
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="text-center mt-6 sm:mt-8">
+          <a
+            href="/planes"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-neutral-800 dark:bg-neutral-200 text-white dark:text-neutral-900 px-5 py-2.5 text-sm font-medium hover:bg-neutral-700 dark:hover:bg-neutral-300 transition-colors"
+          >
+            Ver todos los planes
+            <ArrowRight size={18} strokeWidth={2} />
+          </a>
+        </p>
+        </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Servicios adicionales: ancho completo, stone más oscuro -->
+    <section id="servicios-adicionales" class="w-screen relative left-1/2 -translate-x-1/2 scroll-mt-20 py-12 sm:py-14 lg:py-16 bg-stone-200 dark:bg-stone-800/90" aria-labelledby="servicios-adicionales-heading">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+        <h2 id="servicios-adicionales-heading" class="section-title text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50 text-center mb-2">
+          Servicios adicionales
+        </h2>
+        <p class="text-center text-sm text-neutral-500 dark:text-neutral-400 mb-6 sm:mb-8 max-w-xl mx-auto">
+          Fotografía profesional y marketing digital para complementar tu presencia online.
+        </p>
+        <ul class="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 items-stretch">
+          <li>
+            <a
+              href="https://dev-service-plans-b3bj.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="card-link h-full flex flex-col p-5 sm:p-6 rounded-2xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 shadow-sm active:scale-[0.99] transition-all duration-300 ease-out group touch-manipulation"
+            >
+              <div class="shrink-0 w-12 h-12 rounded-xl bg-neutral-200/80 dark:bg-neutral-700/80 flex items-center justify-center text-neutral-700 dark:text-neutral-300 transition-colors duration-300 group-hover:bg-neutral-300/80 dark:group-hover:bg-neutral-600/80">
+                <Camera size={24} strokeWidth={1.75} />
+              </div>
+              <h3 class="mt-3 sm:mt-4 shrink-0 text-lg sm:text-xl font-semibold text-neutral-900 dark:text-neutral-50 transition-colors duration-300 group-hover:text-neutral-800 dark:group-hover:text-white">
+                Fotografía profesional
+              </h3>
+              <p class="mt-2 flex-1 min-h-0 text-neutral-600 dark:text-neutral-400 text-sm leading-snug transition-colors duration-300 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
+                Fotografía de producto y corporativa para marcas y empresas. Imágenes que venden: catálogos, redes sociales y material visual para tu negocio.
+              </p>
+              <span class="mt-4 shrink-0 inline-flex items-center text-sm font-medium text-neutral-700 dark:text-neutral-400 gap-1.5 transition-all duration-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 group-hover:gap-2">
+                Ver servicios
+                <ArrowRight size={16} strokeWidth={2} class="transition-transform duration-300 group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://mj-marketing-lab.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="card-link h-full flex flex-col p-5 sm:p-6 rounded-2xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 shadow-sm active:scale-[0.99] transition-all duration-300 ease-out group touch-manipulation"
+            >
+              <div class="shrink-0 w-12 h-12 rounded-xl bg-neutral-200/80 dark:bg-neutral-700/80 flex items-center justify-center text-neutral-700 dark:text-neutral-300 transition-colors duration-300 group-hover:bg-neutral-300/80 dark:group-hover:bg-neutral-600/80">
+                <Megaphone size={24} strokeWidth={1.75} />
+              </div>
+              <h3 class="mt-3 sm:mt-4 shrink-0 text-lg sm:text-xl font-semibold text-neutral-900 dark:text-neutral-50 transition-colors duration-300 group-hover:text-neutral-800 dark:group-hover:text-white">
+                Marketing digital
+              </h3>
+              <p class="mt-2 flex-1 min-h-0 text-neutral-600 dark:text-neutral-400 text-sm leading-snug transition-colors duration-300 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
+                Convierte tus redes sociales en un canal real de ventas. Somos una agencia que ayuda a negocios a crecer con estrategia, contenido y publicidad digital.
+              </p>
+              <span class="mt-4 shrink-0 inline-flex items-center text-sm font-medium text-neutral-700 dark:text-neutral-400 gap-1.5 transition-all duration-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 group-hover:gap-2">
+                Ver servicios
+                <ArrowRight size={16} strokeWidth={2} class="transition-transform duration-300 group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          </li>
+        </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contacto: ancho completo, neutral más marcado -->
+    <section id="contacto" class="w-screen relative left-1/2 -translate-x-1/2 scroll-mt-20 py-12 sm:py-14 lg:py-16 bg-neutral-200 dark:bg-neutral-800/90">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mx-auto">
+          <ContactSection />
+        </div>
+      </div>
+    </section>
   </div>
 </BaseLayout>

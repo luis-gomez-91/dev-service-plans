@@ -12,9 +12,11 @@ export interface Plan {
 
 interface Props {
   plans: Plan[];
+  /** Nombre de la empresa (para el enlace "Solicitar plan" por WhatsApp) */
+  empresaName?: string;
 }
 
-const { plans } = Astro.props;
+const { plans, empresaName } = Astro.props;
 ---
 
 <div class="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto items-stretch">
@@ -26,6 +28,7 @@ const { plans } = Astro.props;
       description={plan.description}
       features={plan.features}
       recommended={plan.recommended}
+      empresaName={empresaName}
     />
   ))}
 </div>

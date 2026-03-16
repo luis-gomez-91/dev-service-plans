@@ -17,6 +17,25 @@ Catálogo de planes de desarrollo organizados por empresa/industria. La página 
 npm install
 ```
 
+## Configuración opcional
+
+Para que el botón **Solicitar este plan** abra WhatsApp Web con un mensaje prefabricado, define en `.env` (o en tu entorno) el número de WhatsApp con código de país, sin espacios ni `+`:
+
+```bash
+# Ejemplo: España 612345678 → 34612345678
+PUBLIC_WHATSAPP_NUMBER=34612345678
+```
+
+Si no configuras esta variable, el botón se comporta como un enlace interno (`#solicitar`).
+
+Para que el **formulario de contacto** envíe correos a tu email (por defecto `luis.gomez.veloz@gmail.com`), crea un formulario en [Formspree](https://formspree.io), configura que las notificaciones vayan a tu correo y añade en `.env` el ID del formulario:
+
+```bash
+PUBLIC_FORMSPREE_ID=tu_form_id
+```
+
+Sin esta variable, la sección de contacto mostrará solo el botón de WhatsApp.
+
 ## Scripts
 
 | Comando        | Descripción                    |
