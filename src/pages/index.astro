@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactSection from '../components/ContactSection.astro';
-import { Briefcase, ArrowRight, Globe, Smartphone, Database, CreditCard, MessageCircle, Headphones, Camera, Megaphone } from '@lucide/astro';
+import { ArrowRight, Globe, Smartphone, Database, CreditCard, MessageCircle, Headphones, Camera, Megaphone } from '@lucide/astro';
 
 const companiesModules = import.meta.glob<{ frontmatter: { empresas: string[] } }>(
   '../content/companies/companies.md',
@@ -33,19 +33,23 @@ const favoritos = todasEmpresas.filter((e) => e.data.favorito === true).slice(0,
   title="Inicio"
   description="Desarrollo web, aplicaciones móviles, landing pages, bases de datos, backups, pasarelas de pago, IA y chatbots. Planes por industria para pymes. Precios claros. Dev Service Plans."
 >
-  <div class="flex flex-col">
-    <!-- Hero: zona limpia, sin fondo -->
-    <section class="w-screen relative left-1/2 -translate-x-1/2 py-12 sm:py-16 lg:py-20 text-center bg-neutral-50 dark:bg-neutral-950" aria-labelledby="hero-heading">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="flex flex-col -mt-8 sm:-mt-12 lg:-mt-14">
+    <!-- Hero: imagen de fondo, altura 100vh menos nav -->
+    <section
+      class="w-screen relative left-1/2 -translate-x-1/2 flex flex-col justify-center text-center bg-cover bg-center bg-no-repeat min-h-[calc(100vh-var(--nav-height))] before:absolute before:inset-0 before:backdrop-blur-sm before:bg-white/70 before:dark:bg-neutral-950/70 before:content-['']"
+      style="background-image: url('/images/panel.webp');"
+      aria-labelledby="hero-heading"
+    >
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="max-w-2xl mx-auto">
-          <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 mb-4">
-            <Briefcase size={24} strokeWidth={1.75} />
-          </div>
-          <h1 id="hero-heading" class="text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] font-bold text-neutral-900 dark:text-neutral-50 tracking-tight leading-tight">
-            Desarrollo web y apps para tu negocio
+          <h1 id="hero-heading" class="font-display text-3xl sm:text-4xl md:text-[2.75rem] lg:text-[3rem] xl:text-[3.25rem] font-bold text-neutral-900 dark:text-neutral-50 tracking-tight leading-tight">
+            Impulsa tu negocio con tecnología que realmente genera resultados
           </h1>
-          <p class="mt-3 sm:mt-4 text-base sm:text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
-            Webs, aplicaciones móviles, cobros online, chatbots, IA y páginas de captación. Planes por industria con precios claros.
+          <p class="mt-4 sm:mt-5 text-lg sm:text-xl text-neutral-600 dark:text-neutral-400 leading-relaxed">
+            Creamos páginas web, aplicaciones móviles y sistemas inteligentes que no solo se ven bien, sino que trabajan para ti: captan clientes, automatizan procesos y aumentan tus ventas.
+          </p>
+          <p class="mt-2 sm:mt-3 text-base sm:text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
+            Integramos cobros online, chatbots con IA y herramientas digitales adaptadas a tu industria, para que tu negocio funcione 24/7 sin depender de procesos manuales.
           </p>
         </div>
       </div>
