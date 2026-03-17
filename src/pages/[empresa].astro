@@ -17,6 +17,7 @@ export function getStaticPaths() {
     asomi: 'ASOMI',
     'sabor-vinceno': 'Sabor vinceño',
     'dos-tragos': 'Dos Tragos',
+    'glen-robayo': 'Glen-Robayo',
   };
   const planModules = import.meta.glob<{ frontmatter: PlanData }>('../content/companies/*/plans/*.md', {
     eager: true,
