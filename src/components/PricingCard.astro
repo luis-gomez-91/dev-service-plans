@@ -20,7 +20,7 @@ const message = empresaName
   : `Hola, deseo solicitar el plan "${title}". Gracias.`;
 const whatsappUrl = whatsappNumber
   ? `https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`
-  : '/contacto';
+  : '/#contacto';
 ---
 
 <div
